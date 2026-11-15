@@ -1,0 +1,18 @@
+{
+  "name": "alu-logo-dapp",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Web frontend for the ALU logo registry and ALUT token",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "ethers": "6.17.0"
+  },
+  "devDependencies": {
+    "vite": "7.3.8"
+  }
+}

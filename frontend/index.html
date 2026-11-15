@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ALU Logo Registry</title>
+    <link rel="icon" type="image/png" href="/alu-logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header: shown on every page, holds the Connect Wallet button -->
+    <header class="topbar">
+      <div class="topbar__inner">
+        <a class="brand" href="#verify">
+          <img src="/alu-logo.png" alt="ALU" class="brand__logo" />
+          <span class="brand__name">Logo Registry</span>
+        </a>
+        <nav class="tabs" aria-label="Pages">
+          <a href="#verify" data-route="verify">Verify a Logo</a>
+          <a href="#register" data-route="register">Register</a>
+          <a href="#dashboard" data-route="dashboard">Token Dashboard</a>
+        </nav>
+        <div class="wallet" id="wallet-area">
+          <button class="btn btn--primary" id="connect-btn">Connect Wallet</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Messages about the wallet or network (no wallet, wrong network, etc.) -->
+    <div id="banner" class="banner" hidden></div>
+
+    <main class="page">
+      <!-- ============ PART C: PUBLIC VERIFICATION (no wallet needed) ============ -->
+      <section id="page-verify" class="view" data-page="verify">
+        <div class="hero">
+          <p class="eyebrow">Public check · no wallet needed</p>
+          <h1>Is this the real ALU logo?</h1>
+          <p class="lead">Upload a logo file you received and we'll compare its fingerprint with the official one stored on the blockchain.</p>
+        </div>
+
+        <div class="card">
+          <div class="segmented" role="tablist">
+            <button class="segmented__btn is-active" data-mode="file" role="tab">Upload a file</button>
+            <button class="segmented__btn" data-mode="hash" role="tab">Paste a fingerprint</button>
+          </div>
+
+          <div id="verify-file-mode">
+            <label class="dropzone" id="verify-drop">
+              <input type="file" accept="image/*" id="verify-file" hidden />
+              <div class="dropzone__preview" id="verify-preview" hidden><img alt="Logo you uploaded" /></div>
+              <div class="dropzone__text">
+                <strong>Choose a logo file</strong>
+                <span>or drag it here. It stays on your computer.</span>
+              </div>
+            </label>
+          </div>
+
+          <div id="verify-hash-mode" hidden>
+            <label class="field">
+              <span>Logo fingerprint (SHA-256 hash)</span>
+              <input type="text" id="verify-hash-input" placeholder="Paste the 64-character hash here" spellcheck="false" autocomplete="off" />
+            </label>
+            <button class="btn btn--primary" id="verify-hash-btn">Check this fingerprint</button>
+          </div>
+
+          <p class="muted small" id="verify-target"></p>
+          <div id="verify-result" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- ============ PART B: UPLOAD, HASH AND REGISTER ============ -->
+      <section id="page-register" class="view" data-page="register" hidden>
+        <div class="hero">
+          <p class="eyebrow">Wallet required to register</p>
+          <h1>Register a logo on the blockchain</h1>
+          <p class="lead">Your file is hashed right here in the browser. Only the fingerprint is sent to the blockchain, never the file.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <h2 class="card__title"><span class="step">1</span>Choose the file</h2>
+            <label class="dropzone" id="register-drop">
+              <input type="file" accept="image/*" id="register-file" hidden />
+              <div class="dropzone__preview" id="register-preview" hidden><img alt="Preview of selected file" /></div>
+              <div class="dropzone__text">
+                <strong>Choose an image</strong>
+                <span>PNG, JPG or SVG</span>
+              </div>
+            </label>
+            <div class="hashbox" id="hashbox" hidden>
+              <div><span>File</span><code id="hash-filename"></code></div>
+              <div><span>SHA-256</span><code id="hash-hex"></code></div>
+              <div><span>As bytes32</span><code id="hash-bytes32"></code></div>
+            </div>
+          </div>
+
+          <form class="card" id="register-form" novalidate>
+            <h2 class="card__title"><span class="step">2</span>Register it</h2>
+            <label class="field">
+              <span>Content hash (filled in from step 1)</span>
+              <input type="text" id="reg-hash" readonly placeholder="Choose a file first" />
+            </label>
+            <label class="field">
+              <span>Asset name</span>
+              <input type="text" id="reg-name" placeholder="ALU Official Logo 2026" required />
+            </label>
+            <label class="field">
+              <span>File type</span>
+              <input type="text" id="reg-type" placeholder="PNG" required />
+            </label>
+            <button class="btn btn--primary btn--block" type="submit" id="reg-submit">Register on blockchain</button>
+            <div id="register-status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ============ PART D: TOKEN DASHBOARD ============ -->
+      <section id="page-dashboard" class="view" data-page="dashboard" hidden>
+        <div class="hero">
+          <p class="eyebrow">ALU Logo Token · ALUT</p>
+          <h1>Who owns the ALU logo</h1>
+          <p class="lead">Ownership of the logo is split into 1,000,000 ALUT shares. These numbers are read live from the token contract.</p>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Total supply</span><strong id="stat-supply">...</strong></div>
+          <div class="stat"><span>Your balance</span><strong id="stat-balance">Connect wallet</strong></div>
+          <div class="stat"><span>Your ownership</span><strong id="stat-percent">-</strong></div>
+        </div>
+
+        <div class="grid-2 grid-2--wide-left">
+          <div class="card">
+            <h2 class="card__title">Ownership breakdown</h2>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Holder</th><th>Wallet</th><th class="num">ALUT</th><th class="num">Share</th></tr></thead>
+                <tbody id="holders-body"><tr><td colspan="4" class="muted">Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <form class="card" id="distribute-form" novalidate>
+            <h2 class="card__title">Distribute shares</h2>
+            <p class="muted small" id="distribute-note">Only the logo owner wallet can give out ALUT shares.</p>
+            <fieldset id="distribute-fields">
+              <label class="field">
+                <span>Recipient wallet address</span>
+                <input type="text" id="dist-recipient" placeholder="0x..." spellcheck="false" autocomplete="off" />
+              </label>
+              <label class="field">
+                <span>Amount (ALUT)</span>
+                <input type="text" id="dist-amount" placeholder="10000" inputmode="numeric" />
+              </label>
+              <button class="btn btn--primary btn--block" type="submit" id="dist-submit">Send shares</button>
+            </fieldset>
+            <div id="distribute-status" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span id="contracts-status">Connecting to contracts...</span>
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

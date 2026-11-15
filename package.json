@@ -1,0 +1,31 @@
+{
+  "name": "alu-logo-registry",
+  "version": "1.0.0",
+  "description": "ALU logo registry dApp: ERC-721 logo registration, ERC-20 ownership shares and a web frontend",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "hash": "node scripts/hashLogo.js",
+    "deploy:local": "hardhat run scripts/deploy.js --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia",
+    "frontend:install": "npm --prefix frontend install",
+    "frontend": "npm --prefix frontend run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openzeppelin/contracts": "5.1.0",
+    "dotenv": "^18.0.9"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.29.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "type": "commonjs"
+}
