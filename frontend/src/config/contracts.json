@@ -21,5 +21,28 @@
         "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906"
       }
     ]
+  },
+  "11155111": {
+    "networkName": "sepolia",
+    "chainId": 11155111,
+    "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+    "registryAddress": "0x8AD6256b708301c765b5E482CDDe82b34C33cC1D",
+    "tokenAddress": "0xb2EaB237Aef4E1479abd96ba362e1f6BEf602AA3",
+    "logoTokenId": 1,
+    "owner": "0x8fF023e5553261e35BB861b262FDd24C148028EC",
+    "exampleHolders": [
+      {
+        "label": "Faculty Senate",
+        "address": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+      },
+      {
+        "label": "Student Council",
+        "address": "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC"
+      },
+      {
+        "label": "Alumni Network",
+        "address": "0x90F79bf6EB2c4f870365E785982E1f101E93b906"
+      }
+    ]
   }
 }
