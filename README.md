@@ -120,12 +120,31 @@ These keys are public test keys printed by `npx hardhat node`. Never send real m
 
 **Token Dashboard.** Shows total supply, your balance and ownership %, and every holder. If you're connected as the owner (account #0), the Distribute shares form is enabled: enter a wallet address and amount, approve in MetaMask, and the table updates. Any other wallet sees the form disabled with a message that only the owner can distribute.
 
-## Deploying to the Sepolia testnet (optional)
+## Live on the Sepolia testnet
 
-1. Get a free Sepolia RPC URL (Alchemy or Infura) and some free Sepolia ETH from a faucet.
-2. Copy `.env.example` to `.env` and fill in the values. Use a test wallet only.
+Both contracts are deployed on Ethereum Sepolia (chain ID 11155111) and can be checked on Etherscan:
+
+| Contract | Address |
+|---|---|
+| ALUAssetRegistry | [`0x8AD6256b708301c765b5E482CDDe82b34C33cC1D`](https://sepolia.etherscan.io/address/0x8AD6256b708301c765b5E482CDDe82b34C33cC1D) |
+| ALULogoToken | [`0xb2EaB237Aef4E1479abd96ba362e1f6BEf602AA3`](https://sepolia.etherscan.io/address/0xb2EaB237Aef4E1479abd96ba362e1f6BEf602AA3) |
+| Logo owner (deployer) | `0x8fF023e5553261e35BB861b262FDd24C148028EC` |
+
+The ALU logo is registered as token #1. The whole deployment (both contracts, the logo registration and three share transfers) cost about 0.016 Sepolia ETH.
+
+**Run the website against Sepolia** (no local node needed, the Verify page works without a wallet):
+
+```bash
+VITE_CHAIN_ID=11155111 npm run frontend
+```
+
+On Windows PowerShell use `$env:VITE_CHAIN_ID=11155111; npm run frontend` instead. To use Register or the dashboard on Sepolia, switch MetaMask to Sepolia.
+
+**Deploy your own copy to Sepolia:**
+
+1. Get free Sepolia ETH (for example from the Google Cloud Web3 faucet) into a test wallet.
+2. Copy `.env.example` to `.env` and fill in `SEPOLIA_RPC_URL` (a public one like `https://ethereum-sepolia-rpc.publicnode.com` works) and `PRIVATE_KEY` (your test wallet, never a real one).
 3. `npx hardhat run scripts/deploy.js --network sepolia`
-4. Run the website against Sepolia: create `frontend/.env` containing `VITE_CHAIN_ID=11155111`, then `npm run frontend`.
 
 ## Known issues and limitations
 
@@ -135,6 +154,7 @@ These keys are public test keys printed by `npx hardhat node`. Never send real m
 - **Anyone can call `registerAsset()`.** The registry doesn't restrict who registers, so a registered file isn't automatically official. The Verify page only trusts the token ID ALU registered.
 - **Only browser-extension wallets are supported** (MetaMask, Coinbase Wallet extension, Brave). WalletConnect for mobile wallets isn't added yet.
 - **Ownership percentages are whole numbers**, so a holding under 1% shows as 0%.
+- **The deploy script's final balance line can be stale on Sepolia.** Public RPCs spread requests across several servers, so the "Owner ALUT balance" line once printed 850,000 instead of 820,000 because it read from a server one block behind. The transfers themselves all went through, and the website shows the correct balance.
 - **The holder list is built from Transfer events.** Some public Sepolia RPCs limit event searches; if so, the table falls back to the owner and the three example holders.
 
 ## Problems I ran into and how I fixed them
