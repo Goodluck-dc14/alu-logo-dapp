@@ -72,6 +72,8 @@ export function friendlyError(error) {
     error?.reason,
     error?.shortMessage,
     error?.info?.error?.message,
+    error?.error?.message, // the real wallet error hidden inside "could not coalesce error"
+    error?.error?.data?.message,
     error?.message,
   ]
     .filter(Boolean)
@@ -79,6 +81,9 @@ export function friendlyError(error) {
 
   if (error?.code === "ACTION_REJECTED" || error?.info?.error?.code === 4001 || error?.code === 4001) {
     return "You cancelled the transaction in your wallet. Nothing was sent.";
+  }
+  if (/nonce too (high|low)|invalid block tag/i.test(text)) {
+    return "MetaMask is out of sync with the local blockchain (this happens after restarting the Hardhat node). In MetaMask, delete and re-add the Hardhat Local network, or restart Chrome, then try again.";
   }
   if (text.includes("already been registered")) {
     return "This file has already been registered. Each logo can only be registered once.";
@@ -95,7 +100,8 @@ export function friendlyError(error) {
   if (text.includes("could not detect network") || text.includes("ECONNREFUSED") || text.includes("Failed to fetch")) {
     return "Can't reach the blockchain. Make sure the Hardhat node is running.";
   }
-  return error?.shortMessage || error?.reason || error?.message || "Something went wrong.";
+  // Show the wallet's own message rather than ethers' generic "could not coalesce error"
+  return error?.error?.message || error?.shortMessage || error?.reason || error?.message || "Something went wrong.";
 }
 
 /* ------------------------------------------------------------------ */
